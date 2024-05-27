@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="./style.css">
+    <title>Memories App</title>
+</head>
+
+<body>
+    <div id="toast" class="toast"></div>
+    <h1 style="font-size: 3rem;">Memories App</h1>
+    <p>Below is where you are in the directory, click on the button to navigate</p>
+    <div id="breadcrumb" class="breadcrumb" style="margin-bottom: 10px;"></div>
+
+    <div class="form-control" style="margin-top: 25px;">
+        <hr>
+        <div id="folderDescriptionContainer" style="width: 100%; margin-top: 15px;"></div>
+        <label for="folderDescription">Folder Description</label>
+        <textarea id="folderDescription" rows="6"
+            placeholder="Enter some useful information that describes the content of this folder"
+            style="width: 50%;"></textarea>
+    </div>
+    <button class="button" onclick="saveFolderDescription()">Update Folder Description</button>
+    <hr>
+    </div>
+
+    <p>Click on any of the items below to navigate to or open</p>
+    <div id="fileList" class="grid" style="margin-top: 20px;"></div>
+
+    <div id="imageOverlay" class="overlay" onclick="closeOverlay()">
+        <img id="fullSizeImage" class="overlay-image" src="" alt="Full Size Image">
+    </div>
+
+    <div id="modal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <div class="media-preview" id="mediaPreview" onclick="showFullSizeImage()"></div>
+            <div class="media-metadata">
+                <div id="folderNameLabel" class="form-control">
+                    <label>Folder Name</label>
+                    <input type="text" id="folderName" readonly>
+                </div>
+                <div class="form-control">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="5"></textarea>
+                </div>
+                <div class="form-control">
+                    <label for="memory_date">Date</label>
+                    <input type="date" id="memory_date">
+                </div>
+                <div class="form-control">
+                    <label for="location">Location</label>
+                    <div class="tags-input-wrapper" id="locationTagsInput">
+                        <input type="text" id="locationInput" placeholder="Add a location and press Enter">
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label for="people">People</label>
+                    <div class="tags-input-wrapper" id="peopleTagsInput">
+                        <input type="text" id="peopleInput" placeholder="Add a person and press Enter">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="button" onclick="saveDetails()">Save</button>
+                </div>
+            </div>
+            <div class="comments-section" id="commentsSection">
+                <h3 style="margin-top: 0px; margin-top: 10px">Comments</h3>
+                <hr style="margin-top: 10px">
+                <div class="form-control">
+                    <label for="commentName">Name</label>
+                    <input type="text" id="commentName">
+                </div>
+                <div class="form-control">
+                    <label for="commentText">Memory</label>
+                    <textarea id="commentText" rows="10"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button class="button" onclick="addComment()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    // Include the helper functions
+    <script src="./helper_functions/directoryFunctions.js"></script>
+    <script src="./helper_functions/displayBreadCrumb.js"></script>
+    <script src="./helper_functions/createThumbnail.js"></script>
+    <script src="./helper_functions/getFolderName.js"></script>
+    <script src="./helper_functions/folderFunctions.js"></script>
+    <script src="./helper_functions/displayFiles.js"></script>
+    <script src="./helper_functions/parseLocalDate.js"></script>
+    <script src="./helper_functions/showToast.js"></script>
+    <script src="./helper_functions/commentsFunctions.js"></script>
+    <script src="./helper_functions/saveDetails.js"></script>
+    <script src="./helper_functions/showFullSizeImage.js"></script>
+    <script src="./helper_functions/closeOverlay.js"></script>
+    <script src="./helper_functions/modalFunctions.js"></script>
+
+    // Main script
+    <script>
+        const fileListElement = document.getElementById('fileList');
+        const breadcrumbElement = document.getElementById('breadcrumb');
+        const modal = document.getElementById('modal');
+        const mediaPreview = document.getElementById('mediaPreview');
+        const folderNameInput = document.getElementById('folderName');
+        const descriptionInput = document.getElementById('description');
+        const memoryDateInput = document.getElementById('memory_date');
+        const commentsSection = document.getElementById('commentsSection');
+        let commentNameInput = document.getElementById('commentName');
+        let commentTextInput = document.getElementById('commentText');
+
+        let currentDirectory = '';
+        let currentFileId = null;
+        let currentFileName = '';
+
+        const validImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const validVideoExtensions = ['mp4', 'avi', 'mov'];
+        const validExtensions = [...validImageExtensions, ...validVideoExtensions];
+
+        // The event listeners were previously part of modalFunctions.js, but for some reason
+        // the 'X' wasn't displaying correctly when imported, so I'm leaving them in the main
+        // file for now.
+        peopleTagsInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const input = e.target;
+                const value = input.value.trim();
+                if (value !== '') {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = value + ' <span class="remove-tag" onclick="removeTag(this, updatePeopleInputValue)">×</span>';
+                    peopleTagsInput.insertBefore(tag, input);
+                    input.value = '';
+                    updatePeopleInputValue();
+                }
+            }
+        });
+
+        locationTagsInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const input = e.target;
+                const value = input.value.trim();
+                if (value !== '') {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = value + ' <span class="remove-tag" onclick="removeTag(this, updateLocationInputValue)">×</span>';
+                    locationTagsInput.insertBefore(tag, input);
+                    input.value = '';
+                    updateLocationInputValue();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

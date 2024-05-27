@@ -1,0 +1,472 @@
+html,
+body,
+*,
+*::before,
+*::after {
+    font-family: 'Roboto', sans-serif;
+    /* Replace with your preferred font */
+    margin: 10;
+    padding: 10;
+    box-sizing: border-box;
+    font-size: small;
+    /* Ensure consistent box-sizing */
+}
+
+hr {
+    border: 0;
+    height: 1px; /* Thin line */
+    background-color: lightgrey; /* Grey color */
+    margin: 10px 0; /* Space above and below the line */
+}
+
+.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Maintain aspect ratio and cover the parent container */
+    border: none;
+    /* Remove border */
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.grid-item {
+    text-align: center;
+    cursor: pointer;
+}
+
+.grid-item:empty {
+    display: none;
+  }
+
+.folder-tile {
+    display: inline-block;
+    width: 150px;
+    /* Ensures all items are of equal width */
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease;
+    background-color: #FFE733;
+}
+
+.folder-tile:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.media-tile {
+    display: inline-block;
+    width: 300px;
+    /* Adjust size for media previews */
+    height: 200px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.media-tile:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-button {
+    background-color: #000000; /* Blue background */
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.breadcrumb-button:hover {
+    background-color: #c4c4c4; /* Darker blue on hover */
+}
+
+.breadcrumb-button:focus {
+    outline: none; /* Remove the default focus outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a focus shadow */
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 999;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scrolling if needed */
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Black background with opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* Two columns: 2/3 for media and metadata, 1/3 for comments */
+    grid-template-rows: auto auto auto;
+    /* Three rows: media, metadata, comments */
+    width: 90%;
+    /* Reduced width */
+    max-width: 900px;
+    /* Maximum width */
+    max-height: 90vh;
+    /* Maximum height */
+    background-color: #fff;
+    /* White background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    gap: 20px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.modal-content::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+.media-preview {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    max-height: 60vh;
+    /* Limit height to ensure space for metadata and comments */
+    overflow: hidden;
+    /* Ensure content does not overflow */
+}
+
+.media-preview img,
+.media-preview video {
+    max-width: 100%;
+    max-height: 100%;
+    border: none;
+    /* Remove border */
+    object-fit: contain;
+    cursor: pointer; 
+    /* Ensure the media fits within the container while maintaining aspect ratio */
+}
+
+.media-metadata {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    text-align: left;
+    overflow: auto;
+    /* Enable scrolling for overflow content */
+}
+
+.comments-section {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    overflow-y: auto;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+.form-control label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control input,
+.form-control textarea {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid lightgrey; /* Thin light grey border */
+    border-radius: 4px; /* Optional: adds rounded corners */
+    outline: none; /* Removes the default outline */
+}
+
+.form-control input:focus,
+.form-control textarea:focus {
+    border-color: #888; /* Changes border color on focus for better visibility */
+}
+
+.form-actions {
+    text-align: right;
+}
+
+.button {
+    background-color: #000000;
+    /* Green background */
+    color: white;
+    /* White text */
+    padding: 10px 20px;
+    /* Padding */
+    border: none;
+    /* Remove border */
+    border-radius: 5px;
+    /* Rounded corners */
+    font-size: 12px;
+    /* Font size */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;
+    /* Smooth background color transition */
+}
+
+.button:hover {
+    background-color: #a49e9e;
+    /* Darker green on hover */
+}
+
+.button:active {
+    background-color: #a49e9e;
+    /* Even darker green when active */
+}
+
+.toast {
+    visibility: hidden;
+    /* Hidden by default */
+    min-width: 200px;
+    /* Minimum width */
+    margin-left: -125px;
+    /* Center the toast */
+    background-color: #333;
+    /* Background color */
+    color: #fff;
+    /* Text color */
+    text-align: center;
+    /* Centered text */
+    border-radius: 5px;
+    /* Rounded corners */
+    border: 1px solid white;
+    padding: 16px;
+    /* Padding */
+    position: fixed;
+    /* Fixed position */
+    z-index: 2000;
+    /* Higher z-index to sit on top of the modal */
+    left: 50%;
+    top: 10px;
+    font-size: 17px;
+    /* Font size */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Optional: Add a shadow effect */
+    transition: visibility 0.5s, opacity 0.5s ease-in-out;
+    /* Smooth transition for visibility and opacity */
+}
+
+.toast.show {
+    visibility: visible;
+    /* Show the toast */
+    opacity: 1;
+    /* Set opacity to fully visible */
+}
+
+.comment-box {
+    background-color: #f1f1f1; /* Light grey background */
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px; /* Padding inside the box */
+    margin-bottom: 10px; /* Space between comments */
+    max-width: 100%; /* Max width to mimic chat bubbles */
+    word-wrap: break-word; /* Ensure long words break to the next line */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow */
+  }
+  
+  .comment-box strong {
+    display: block; /* Display name as a block element */
+    margin-bottom: 5px; /* Space between name and comment */
+  }
+  
+  .comment-box p {
+    margin: 0; /* Remove default paragraph margin */
+  }
+
+  .comment-box small {
+    display: block; /* Make the small element a block element */
+    margin-bottom: 5px; /* Add margin below the small element */
+  }
+
+  .comment-button {
+    min-width: 60px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 5px 5px;
+    border: none;
+    border-radius: 5px;
+    /* Rounded corners */
+    font-size: 10px;
+    /* Font size */
+    font-weight: 300;
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;
+    /* Smooth background color transition */
+}
+
+.comment-button:hover {
+    background-color: #a49e9e;
+}
+
+.comment-button:active {
+    background-color: #a49e9e;
+}
+
+.comment-actions {
+    margin-top: 15px;
+}
+
+.comment-text {
+    font-size: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.edit-comment-button {
+    min-width: 30px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 5px 5px;
+    border: none;
+    border-radius: 5px;
+    /* Rounded corners */
+    font-size: 10px;
+    /* Font size */
+    font-weight: 300;
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s ease;
+    /* Smooth background color transition */
+}
+
+.edit-comment-button:hover {
+    background-color: #c9c9c9;
+}
+
+.edit-comment-button:active {
+    background-color: #c9c9c9;
+}
+
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+
+    to {
+        top: 20px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        top: 20px;
+        opacity: 1;
+    }
+
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+
+
+.tags-input-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 40px;
+    cursor: text;
+}
+
+.tags-input-wrapper input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 3px;
+    padding: 5px 10px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tag .remove-tag {
+    margin-left: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Overlay for full-size image */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000; /* Higher z-index */
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-image {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.overlay.show {
+    display: flex;
+}
